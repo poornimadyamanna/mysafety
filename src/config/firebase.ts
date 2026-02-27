@@ -1,8 +1,18 @@
-import admin from 'firebase-admin';
-import serviceAccount from '../../serviceAccountKey.json';
+import admin from "firebase-admin";
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-});
+const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+
+if (!raw) {
+  throw new Error("Missing FIREBASE_SERVICE_ACCOUNT_JSON environment variable");
+}
+
+const serviceAccount = JSON.parse(raw);
+
+// Prevent re-initialization in hot-reload / multiple imports
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  });
+}
 
 export default admin;
