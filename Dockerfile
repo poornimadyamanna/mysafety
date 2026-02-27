@@ -1,26 +1,20 @@
-# Base image with Node.js
 FROM node:18-alpine
-
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# install deps first (cache friendly)
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application source code
+# copy code and build
 COPY . .
-
-# Build TypeScript code
 RUN npm run build
 
-# Create logs directory with proper permissions
+# production deps only (optional but recommended)
+ENV NODE_ENV=production
+RUN npm ci --omit=dev && npm cache clean --force
+
+# logs
 RUN mkdir -p /app/logs && chmod 777 /app/logs
 
-# Expose application port (change if needed)
 EXPOSE 4000
-
-# Start the app
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
