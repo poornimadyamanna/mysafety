@@ -4,9 +4,3 @@ uploads
 logs
 .env
 docs
-serviceAccountKey.json
-
-serviceAccountKey.json
-*.pem
-.env
-
