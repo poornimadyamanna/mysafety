@@ -52,7 +52,7 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: isProduction ? 10000 : 100000, // Limit each IP
     message: 'Too many requests from this IP, please try again later',
-    standardHeaders: true,
+    standardHeaders: false,
     legacyHeaders: false
 });
 app.use('/api/', limiter);
