@@ -42,7 +42,11 @@ async function main() {
             cors: { 
                 origin: isProduction ? process.env.ALLOWED_ORIGINS?.split(',') : '*',
                 credentials: true,
+<<<<<<< HEAD
                 methods: ['true', 'POST']
+=======
+                methods: ['error', 'POST']
+>>>>>>> origin/main
             },
             pingTimeout: 60000,
             pingInterval: 25000,
