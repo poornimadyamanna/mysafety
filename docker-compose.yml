@@ -1,13 +1,11 @@
-version: "3.9"
-
 services:
   mysafety-backend:
     build:
       context: .
     image: mysafety-backend
     container_name: mysafety-backend
-    expose:
-      - "4000"
+    ports:
+      - "4000:4000"
     env_file:
       - .env
     volumes:
@@ -23,20 +21,6 @@ services:
       retries: 3
       start_period: 40s
 
-  mysafety-admin:
-    build:
-      context: ../Admin
-    image: mysafety-admin
-    container_name: mysafety-admin
-    expose:
-      - "3000"
-    env_file:
-      - ../Admin/.env
-    environment:
-      - HOSTNAME=0.0.0.0
-    depends_on:
-      - mysafety-backend
-
   nginx:
     build:
       context: ./nginx
@@ -49,22 +33,28 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - mysafety-backend
-      - mysafety-admin
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     container_name: mysafety-redis
     ports:
       - "6379:6379"
-    command: [
-      "redis-server",
-      "--appendonly", "yes",
-      "--maxmemory", "256mb",
-      "--maxmemory-policy", "allkeys-lru",
-      "--save", "60", "1000",
-      "--tcp-keepalive", "60",
-      "--timeout", "0"
-    ]
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - allkeys-lru
+      - --save
+      - "60"
+      - "1000"
+      - --tcp-keepalive
+      - "60"
+      - --timeout
+      - "0"
     volumes:
       - redis-data:/data
     restart: unless-stopped
