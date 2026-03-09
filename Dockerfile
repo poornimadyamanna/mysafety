@@ -1,5 +1,4 @@
 FROM node:20-alpine
-
 WORKDIR /app
 
 # Needed because your healthcheck uses wget (alpine doesn't always have it)
